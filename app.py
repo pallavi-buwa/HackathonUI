@@ -57,7 +57,33 @@ def login():
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
+class UserForm(FlaskForm):
+    context = StringField('Context', validators=[DataRequired()])
+    category = StringField('Category', validators=[DataRequired()])
+    threshold = StringField('Threshold', validators=[DataRequired()])
+    num_of_matches = StringField('Number of matches', validators=[DataRequired()])
+    input_path = StringField('Input path', validators=[DataRequired()])
+    submit = SubmitField('Fetch')
 
+@app.route("/user", methods=['GET', 'POST'])
+def user():
+    form = UserForm() 
+    new_user = {
+        "context": form.context.data,
+        "category": form.category.data,
+        "threshold": form.threshold.data,
+        "num_of_matches" : form.num_of_matches,
+        "input_path": form.input_path
+    }
+
+    # Insert the new user data into your database
+    #client = MongoClient("MongDBURL")
+    #db = client["login"]
+    #db.users.insert_one(new_user)
+
+    print(new_user)
+    return redirect(url_for('login'))
+    
 
 
 class RegistrationForm(FlaskForm):
