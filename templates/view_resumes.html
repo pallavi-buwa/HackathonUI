@@ -10,22 +10,10 @@
     <div class="container mt-5">
         <h1 class="mb-4">Matches</h1>
 
-        <!-- Technology Skills Section -->
-        <h2 class="mb-3">Extracted Technology Skills</h2>
-        {% if technology_names %}
-            <ul class="list-group mb-4">
-                {% for tech in technology_names %}
-                    <li class="list-group-item">{{ tech }}</li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p class="text-danger">No technology skills found.</p>
-        {% endif %}
-
         <!-- Resumes Section -->
-        <h2 class="mb-3">Top Candidates</h2>
+        <!-- <h2 class="mb-3">Top Resumes</h2> -->
         {% if user_data %}
-            <ul class="list-group">
+            <!-- <ul class="list-group">
                 {% for user in user_data %}
                     <li class="list-group-item">
                         <strong>Name:</strong> {{ user['name'] }}<br>
@@ -34,7 +22,27 @@
                         <strong>Resume:</strong> <a href="/fetch_resume/{{ user['resume_id'] }}">View Resume</a>
                     </li>
                 {% endfor %}
-            </ul>
+            </ul> -->
+
+            <h1>Top Resumes</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Path</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in user_data %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.path }}</td>
+                    <td>{{ item.score }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
         {% else %}
             <p class="text-danger">No resumes found.</p>
         {% endif %}

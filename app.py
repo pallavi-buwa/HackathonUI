@@ -7,13 +7,14 @@ from bson import ObjectId
 from flask import Flask, render_template, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, FloatField
 from wtforms.validators import DataRequired
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField
 from wtforms.validators import DataRequired, EqualTo, Email
+import requests
 
 app = Flask(__name__)
 
@@ -57,32 +58,40 @@ def login():
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
-class UserForm(FlaskForm):
+class RecruiterForm(FlaskForm):
     context = StringField('Context', validators=[DataRequired()])
     category = StringField('Category', validators=[DataRequired()])
-    threshold = StringField('Threshold', validators=[DataRequired()])
-    num_of_matches = StringField('Number of matches', validators=[DataRequired()])
+    threshold = FloatField('Threshold', validators=[DataRequired()])
+    num_of_matches = IntegerField('Number of matches', validators=[DataRequired()])
     input_path = StringField('Input path', validators=[DataRequired()])
     submit = SubmitField('Fetch')
 
-@app.route("/user", methods=['GET', 'POST'])
-def user():
-    form = UserForm() 
-    new_user = {
-        "context": form.context.data,
-        "category": form.category.data,
-        "threshold": form.threshold.data,
-        "num_of_matches" : form.num_of_matches,
-        "input_path": form.input_path
-    }
-
-    # Insert the new user data into your database
-    #client = MongoClient("MongDBURL")
-    #db = client["login"]
-    #db.users.insert_one(new_user)
-
-    print(new_user)
-    return redirect(url_for('login'))
+@app.route("/recruiter", methods=['GET', 'POST'])
+def recruiter():
+    form = RecruiterForm()
+    if request.method == "POST": 
+        data = {
+            "context": form.context.data,
+            "category": form.category.data,
+            "threshold": form.threshold.data,
+            "noOfMatches" : form.num_of_matches.data,
+            "inputPath": form.input_path.data
+        }
+        print(data)
+        api_url = 'https://apisteam308.azurewebsites.net/search'
+        response = requests.post(api_url, json=data)
+        resume_data = (response.json())
+        final_data=resume_data['results']
+        if response.status_code == 200:
+            print("status is 200ok")
+            print("CHECK THISSS")
+            print(final_data)
+            return render_template('view_resumes.html', user_data=final_data)
+        #return render_template('view_resumes.html', user_data=user_data, technology_names=bef_technology_names)
+        else:
+            return render_template('recruiter.html', title='Recruiter dashboard', form=form)
+        
+    return render_template('recruiter.html', title='Recruiter dashboard', form=form)
     
 
 
@@ -135,6 +144,11 @@ def home():
 @app.route('/about')
 def about():
     return render_template('about.html')
+
+@app.route('/recruiterdashboard')
+def recruiterdashboard():
+    return render_template('job_request.html')
+
 
 @app.route('/dashboard')
 @login_required
