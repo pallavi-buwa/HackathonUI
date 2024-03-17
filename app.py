@@ -64,7 +64,7 @@ class RecruiterForm(FlaskForm):
     threshold = FloatField('Threshold', validators=[DataRequired()])
     num_of_matches = IntegerField('Number of matches', validators=[DataRequired()])
     input_path = StringField('Input path', validators=[DataRequired()])
-    submit = SubmitField('Fetch')
+    submit = SubmitField('Fetch Top Results')
 
 @app.route("/recruiter", methods=['GET', 'POST'])
 def recruiter():
@@ -77,17 +77,14 @@ def recruiter():
             "noOfMatches" : form.num_of_matches.data,
             "inputPath": form.input_path.data
         }
-        print(data)
+        #print(data)
         api_url = 'https://apisteam308.azurewebsites.net/search'
         response = requests.post(api_url, json=data)
         resume_data = (response.json())
         final_data=resume_data['results']
         if response.status_code == 200:
-            print("status is 200ok")
-            print("CHECK THISSS")
-            print(final_data)
+            #print(final_data)
             return render_template('view_resumes.html', user_data=final_data)
-        #return render_template('view_resumes.html', user_data=user_data, technology_names=bef_technology_names)
         else:
             return render_template('recruiter.html', title='Recruiter dashboard', form=form)
         
