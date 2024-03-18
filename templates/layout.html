@@ -17,11 +17,18 @@
     
         .navbar-custom .navbar-brand,
         .navbar-custom .navbar-text {
-            color: rgb(241, 243, 209);
+            /*color: rgb(241, 243, 209);*/
+            color: whitesmoke
         }
 
         .navlink-custom {
             color: bisque;
+        }
+
+        .navbar-yellow-line{
+            background-color: rgb(249,197, 74);
+            height: 5px;
+            width: 100%;
         }
     </style>
 </head>
@@ -55,7 +62,9 @@
                 </ul>
             </div>
         </div>
+        
     </nav>
+    <div class="navbar-yellow-line"></div>
 
     <main class="container my-5">
         {% block content %}

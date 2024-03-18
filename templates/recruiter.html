@@ -1,59 +1,58 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-
-
-<div class="row justify-content-center">
-  <div class="col-md-6">
-
-    <div class="card mt-5">
-
-      <div class="card-body">
-
-        <h4 class="card-title text-center">Specify Requirements</h4>
-
-        <form method="POST" action="/recruiter">
-          
-          {{ form.hidden_tag() }}
-
-          <div class="form-group" style="margin: 10px;">
-            {{ form.context(class="form-control", placeholder="Context") }}
-          </div>
-
-          <div class="form-group" style="margin: 10px;">
-            {{ form.category(class="form-control", placeholder="Category") }}
-          </div>
-
-          <!-- <div class="form-group" style="margin: 10px;">
-            {{ form.threshold(class="form-control", placeholder="Threshold") }}
-          </div> -->
-
-          <div class="form-group" style="margin: 10px;">
-            <label for="threshold">Threshold:</label>
-            <input type="range" class="form-range" id="threshold" name="threshold" min="0" max="1" step="0.1" value="{{ form.threshold.data }}">
-            <output for="threshold" id="thresholdValue">{{ form.threshold.data }}</output>
-          </div>
-
-          <div class="form-group" style="margin: 10px;">
-            {{ form.num_of_matches(class="form-control", placeholder="Number of matches") }}
-          </div>
-
-          <div class="form-group" style="margin: 10px;">
-            {{ form.input_path(class="form-control", placeholder="Input path") }}
-          </div>
-          <center>{{ form.submit(class="btn btn-dark btn-block") }}</center>
-
-        </form>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card mt-5">
+        <div class="card-body">
+          <h4 class="card-title text-center mb-4">Specify Requirements</h4>
+          <form method="POST" action="/recruiter">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+              {{ form.context(class="form-control", placeholder="Context") }}
+            </div>
+            <div class="mb-3">
+              <label for="category" class="form-label">Category:</label>
+              <select class="form-select" id="category" name="category">
+                <option value="job" {% if form.category.data == 'job' %} selected {% endif %}>Job</option>
+                <option value="resume" {% if form.category.data == 'resume' %} selected {% endif %}>Resume</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="threshold" class="form-label">Threshold:</label>
+              <div class="d-flex align-items-center">
+                <input type="range" class="form-range me-2" id="threshold" name="threshold" min="0" max="1" step="0.1" value="{{ form.threshold.data }}">
+                <output for="threshold" id="thresholdValue" class="ms-2">{{ form.threshold.data }}</output>
+              </div>
+            </div>
+            <div class="mb-3">
+              {{ form.num_of_matches(class="form-control", placeholder="Number of matches", value=3) }}
+            </div>
+            <div class="mb-3">
+              {{ form.input_path(class="form-control", placeholder="Input path") }}
+            </div>
+            <div class="text-center">
+              {{ form.submit(class="btn btn-dark btn-block") }}
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  // Update the output element with the value of the range input
+  // Update the output element with the default value of the range input
+  document.addEventListener("DOMContentLoaded", function() {
+    var thresholdInput = document.getElementById('threshold');
+    var thresholdOutput = document.getElementById('thresholdValue');
+    thresholdOutput.innerHTML = thresholdInput.value;
+  });
+
+  // Update the output element dynamically as the range input changes
   document.getElementById('threshold').addEventListener('input', function() {
     document.getElementById('thresholdValue').innerHTML = this.value;
   });
 </script>
-
 {% endblock %}

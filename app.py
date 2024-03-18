@@ -72,7 +72,7 @@ def recruiter():
     if request.method == "POST": 
         data = {
             "context": form.context.data,
-            "category": form.category.data,
+            "category": form.category.data.lower(),
             "threshold": form.threshold.data,
             "noOfMatches" : form.num_of_matches.data,
             "inputPath": form.input_path.data
